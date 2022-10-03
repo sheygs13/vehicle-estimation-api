@@ -19,4 +19,10 @@ export class Report {
 
   @Column()
   price: string;
+
+  @Column()
+  created_at: Date;
+
+  @Column()
+  updated_at: Date;
 }

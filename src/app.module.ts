@@ -15,7 +15,8 @@ import { Report } from './reports/report.entity';
       type: 'sqlite',
       database: 'vehicle-estimation.sqlite',
       entities: [User, Report],
-      synchronize: true,
+      // never set to true on prod, use migration scripts instead
+      synchronize: process.env.NODE_ENV === 'production' ? false : true,
     }),
     UsersModule,
     ReportsModule,
