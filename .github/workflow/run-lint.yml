@@ -1,0 +1,27 @@
+name: run lint
+
+on:
+  pull_request:
+    branches: [develop]
+
+jobs:
+  run-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v2
+
+      - name: set up node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://npm.pkg.github.com/
+
+      - name: set up NPM
+        run: npm ci && npm install
+
+      - name: check prettier rules format
+        run: npm run format
+
+      - name: lint code
+        run: npm run lint
