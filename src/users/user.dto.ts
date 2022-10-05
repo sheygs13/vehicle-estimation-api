@@ -1,4 +1,5 @@
 import { IsEmail, IsString, IsOptional } from 'class-validator';
+import { Expose } from 'class-transformer';
 
 export class CreateUser {
   @IsEmail()
@@ -24,4 +25,18 @@ export class QueryParams {
 
   @IsOptional()
   password?: string;
+}
+
+export class User {
+  @Expose()
+  id: string;
+
+  @Expose()
+  email: string;
+
+  @Expose()
+  created_at: Date;
+
+  @Expose()
+  updated_at: Date;
 }

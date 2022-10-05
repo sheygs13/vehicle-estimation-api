@@ -8,11 +8,20 @@ import {
   Query,
   Param,
   ParseUUIDPipe,
+  UseInterceptors,
 } from '@nestjs/common';
-import { CreateUser, UpdateUser, QueryParams } from './user.dto';
+import {
+  CreateUser,
+  UpdateUser,
+  QueryParams,
+  User as UserDto,
+} from './user.dto';
 import { UsersService } from './users.service';
+import { Serialize } from '../interceptors/serialize.interceptors';
 
 @Controller('auth')
+// expects a class dto
+@Serialize(UserDto)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -25,9 +34,8 @@ export class UsersController {
 
   @Get('users/:id')
   async findUser(@Param('id') id: string) {
+    console.log('running handler...');
     const user = await this.userService.findOne(id);
-
-    delete user.password;
 
     return user;
   }
@@ -49,6 +57,7 @@ export class UsersController {
   @Patch('users/:id')
   async updateUser(@Param('id') id: string, @Body() body: UpdateUser) {
     const updatedUser = await this.userService.update(id, body);
+
     return updatedUser;
   }
 }
