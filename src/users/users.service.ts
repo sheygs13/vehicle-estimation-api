@@ -22,7 +22,7 @@ export class UsersService {
     const user = await this.repository.findOne({ where: { id } });
 
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
 
     return user;
