@@ -12,24 +12,36 @@ import {
 } from '@nestjs/common';
 import {
   CreateUser,
+  LoginUser,
   UpdateUser,
   QueryParams,
   User as UserDto,
 } from './user.dto';
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
 import { Serialize } from '../interceptors/serialize.interceptors';
 
 @Controller('auth')
 // expects a class dto
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('signup')
   signUp(@Body() body: CreateUser) {
-    const newUser = this.userService.createUser(body);
+    const newUser = this.authService.createAccount(body);
 
     return newUser;
+  }
+
+  @Post('signin')
+  async signIn(@Body() body: LoginUser) {
+    const user = await this.authService.signIn(body);
+
+    return user;
   }
 
   @Get('users/:id')

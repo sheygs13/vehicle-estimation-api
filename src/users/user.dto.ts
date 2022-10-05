@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsOptional } from 'class-validator';
+import { IsEmail, IsString, IsOptional, Length } from 'class-validator';
 import { Expose } from 'class-transformer';
 
 export class CreateUser {
@@ -6,8 +6,11 @@ export class CreateUser {
   email: string;
 
   @IsString()
+  @Length(3, 20)
   password: string;
 }
+
+export class LoginUser extends CreateUser {}
 
 export class UpdateUser {
   @IsEmail()
