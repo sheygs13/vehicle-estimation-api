@@ -7,8 +7,7 @@ import {
   Patch,
   Query,
   Param,
-  ParseUUIDPipe,
-  UseInterceptors,
+  Session,
 } from '@nestjs/common';
 import {
   CreateUser,
@@ -30,16 +29,40 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  @Post('signup')
-  signUp(@Body() body: CreateUser) {
-    const newUser = this.authService.createAccount(body);
+  @Get('names/:name')
+  setColor(@Param('name') name: string, @Session() session: any) {
+    session.name = name;
+  }
 
-    return newUser;
+  @Get('names')
+  getColors(@Session() session: any) {
+    return session.name;
+  }
+
+  @Get('me')
+  getCurrentUser(@Session() session: any) {
+    return this.userService.findOne(session.userId);
+  }
+
+  @Post('signout')
+  async signOut(@Session() session: any) {
+    session.userId = null;
+  }
+
+  @Post('signup')
+  async signUp(@Body() body: CreateUser, @Session() session: any) {
+    const user = await this.authService.createAccount(body);
+
+    session.userId = user.id;
+
+    return user;
   }
 
   @Post('signin')
-  async signIn(@Body() body: LoginUser) {
+  async signIn(@Body() body: LoginUser, @Session() session: any) {
     const user = await this.authService.signIn(body);
+
+    session.userId = user.id;
 
     return user;
   }
