@@ -8,6 +8,8 @@ import {
   Query,
   Param,
   Session,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import {
   CreateUser,
@@ -40,8 +42,11 @@ export class UsersController {
   }
 
   @Get('me')
-  getCurrentUser(@Session() session: any) {
-    return this.userService.findOne(session.userId);
+  async getCurrentUser(@Session() session: any) {
+    console.log({ session });
+    const currentUser = await this.userService.findOne(session.userId);
+    console.log({ currentUser });
+    return currentUser;
   }
 
   @Post('signout')
@@ -71,6 +76,10 @@ export class UsersController {
   async findUser(@Param('id') id: string) {
     console.log('running handler...');
     const user = await this.userService.findOne(id);
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
+    }
 
     return user;
   }
